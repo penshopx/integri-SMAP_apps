@@ -1,1 +1,8 @@
-npm install openai next-themes lucide-react date-fns @hookform/resolvers zod react-hook-form
+import OpenAI from 'openai';
+
+// Initialize the OpenAI client with API key from environment variable
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+export default openai;
