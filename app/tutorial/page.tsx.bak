@@ -1,0 +1,383 @@
+"use client";
+
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { Play, FileText, Download, BookOpen, HelpCircle } from 'lucide-react';
+
+export default function TutorialPage() {
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+
+  const videoTutorials = [
+    {
+      id: 1,
+      title: "Pengenalan SMAP",
+      duration: "5:30",
+      thumbnail: "/placeholder.svg?height=200&width=350",
+      description: "Pengenalan tentang Sistem Manajemen Anti Penyuapan (SMAP) dan ISO 37001.",
+    },
+    {
+      id: 2,
+      title: "Cara Membuat Dokumen",
+      duration: "8:45",
+      thumbnail: "/placeholder.svg?height=200&width=350",
+      description: "Tutorial langkah demi langkah untuk membuat dokumen SMAP di aplikasi.",
+    },
+    {
+      id: 3,
+      title: "Manajemen Risiko",
+      duration: "7:20",
+      thumbnail: "/placeholder.svg?height=200&width=350",
+      description: "Cara mengidentifikasi, menilai, dan mengelola risiko penyuapan.",
+    },
+    {
+      id: 4,
+      title: "Implementasi Kontrol",
+      duration: "10:15",
+      thumbnail: "/placeholder.svg?height=200&width=350",
+      description: "Panduan untuk mengimplementasikan kontrol anti penyuapan yang efektif.",
+    },
+  ];
+
+  const stepByStepGuides = [
+    {
+      id: "guide-1",
+      title: "Memulai dengan SMAP",
+      steps: [
+        "Buat akun dan login ke aplikasi",
+        "Lengkapi profil organisasi Anda",
+        "Beli token sesuai kebutuhan",
+        "Akses dashboard utama",
+      ],
+    },
+    {
+      id: "guide-2",
+      title: "Membuat Dokumen SMAP",
+      steps: [
+        "Pilih menu 'Buat Dokumen'",
+        "Pilih jenis dokumen yang ingin dibuat",
+        "Isi informasi yang diperlukan",
+        "Tinjau dan hasilkan dokumen",
+        "Unduh atau simpan dokumen",
+      ],
+    },
+    {
+      id: "guide-3",
+      title: "Mengelola Risiko Penyuapan",
+      steps: [
+        "Akses menu 'Manajemen Risiko'",
+        "Tambahkan risiko baru",
+        "Tentukan tingkat dampak dan kemungkinan",
+        "Tentukan kontrol yang akan diterapkan",
+        "Pantau dan perbarui status risiko",
+      ],
+    },
+  ];
+
+  const faqs = [
+    {
+      question: "Apa itu ISO 37001?",
+      answer: "ISO 37001 adalah standar internasional untuk sistem manajemen anti penyuapan. Standar ini memberikan panduan untuk membantu organisasi mencegah, mendeteksi, dan menangani penyuapan dengan menerapkan kebijakan, prosedur, dan kontrol anti penyuapan.",
+    },
+    {
+      question: "Bagaimana cara membeli token?",
+      answer: "Anda dapat membeli token dengan mengakses menu 'Beli Token' di aplikasi. Pilih paket token yang sesuai dengan kebutuhan Anda, lakukan pembayaran melalui metode yang tersedia, dan token akan otomatis ditambahkan ke akun Anda setelah pembayaran diverifikasi.",
+    },
+    {
+      question: "Berapa lama token berlaku?",
+      answer: "Masa berlaku token tergantung pada paket yang Anda beli. Paket Dasar berlaku selama 6 bulan, sedangkan Paket Standar dan Premium berlaku selama 12 bulan. Anda dapat melihat masa berlaku token di halaman 'Status Token' di akun Anda.",
+    },
+    {
+      question: "Apakah dokumen yang dihasilkan sesuai dengan standar ISO 37001?",
+      answer: "Ya, semua dokumen yang dihasilkan oleh aplikasi kami dirancang sesuai dengan persyaratan ISO 37001. Dokumen-dokumen ini telah ditinjau oleh ahli SMAP dan auditor berpengalaman untuk memastikan kesesuaian dengan standar.",
+    },
+    {
+      question: "Bagaimana cara mendapatkan bantuan jika mengalami masalah?",
+      answer: "Anda dapat menghubungi tim dukungan kami melalui menu 'Bantuan' di aplikasi, mengirim email ke support@integriguide.com, atau menghubungi nomor telepon yang tercantum di halaman Kontak. Tim kami siap membantu Anda dari Senin hingga Jumat, pukul 08.00-17.00 WIB.",
+    },
+  ];
+
+  const downloads = [
+    {
+      title: "Template Kebijakan Anti Penyuapan",
+      description: "Template dasar untuk kebijakan anti penyuapan sesuai ISO 37001",
+      fileType: "DOCX",
+      fileSize: "245 KB",
+      url: "#",
+    },
+    {
+      title: "Checklist Implementasi ISO 37001",
+      description: "Daftar periksa untuk membantu implementasi ISO 37001",
+      fileType: "PDF",
+      fileSize: "180 KB",
+      url: "#",
+    },
+    {
+      title: "Form Penilaian Risiko",
+      description: "Template untuk melakukan penilaian risiko penyuapan",
+      fileType: "XLSX",
+      fileSize: "320 KB",
+      url: "#",
+    },
+    {
+      title: "Panduan Pengguna Aplikasi",
+      description: "Panduan lengkap penggunaan aplikasi SMAP",
+      fileType: "PDF",
+      fileSize: "4.2 MB",
+      url: "#",
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Tutorial & Panduan</h1>
+        <p className="text-muted-foreground">
+          Pelajari cara menggunakan aplikasi dan mengimplementasikan SMAP
+        </p>
+      </div>
+
+      <Tabs defaultValue="video" className="w-full">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="video">Video Tutorial</TabsTrigger>
+          <TabsTrigger value="guides">Panduan Langkah demi Langkah</TabsTrigger>
+          <TabsTrigger value="interactive">Tutorial Interaktif</TabsTrigger>
+          <TabsTrigger value="downloads">Unduhan</TabsTrigger>
+          <TabsTrigger value="faq">FAQ</TabsTrigger>
+        </TabsList>
+
+        {/* Video Tutorial */}
+        <TabsContent value="video" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Video Tutorial</CardTitle>
+              <CardDescription>
+                Pelajari cara menggunakan aplikasi melalui video tutorial
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="md:col-span-2">
+                  <div className="aspect-video bg-muted rounded-md overflow-hidden relative">
+                    <img
+                      src={videoTutorials[activeVideoIndex].thumbnail || "/placeholder.svg"}
+                      alt={videoTutorials[activeVideoIndex].title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Button size="icon" className="rounded-full h-12 w-12">
+                        <Play className="h-6 w-6" />
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <h3 className="text-xl font-semibold">
+                      {videoTutorials[activeVideoIndex].title}
+                    </h3>
+                    <p className="text-muted-foreground mt-1">
+                      {videoTutorials[activeVideoIndex].description}
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="font-medium">Daftar Video</h3>
+                  {videoTutorials.map((video, index) => (
+                    <div
+                      key={video.id}
+                      className={`flex items-start space-x-3 p-3 rounded-md cursor-pointer ${
+                        index === activeVideoIndex
+                          ? "bg-primary/10 border border-primary/20"
+                          : "hover:bg-muted"
+                      }`}
+                      onClick={() => setActiveVideoIndex(index)}
+                    >
+                      <div className="relative flex-shrink-0">
+                        <img
+                          src={video.thumbnail || "/placeholder.svg"}
+                          alt={video.title}
+                          className="w-20 h-12 object-cover rounded-md"
+                        />
+                        <div className="absolute bottom-1 right-1 bg-black/70 text-white text-xs px-1 rounded">
+                          {video.duration}
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm line-clamp-2">
+                          {video.title}
+                        </h4>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Panduan Langkah demi Langkah */}
+        <TabsContent value="guides" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Panduan Langkah demi Langkah</CardTitle>
+              <CardDescription>
+                Ikuti panduan ini untuk mempelajari fitur-fitur aplikasi
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {stepByStepGuides.map((guide) => (
+                  <div key={guide.id} className="border rounded-lg p-4">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center">
+                      <BookOpen className="mr-2 h-5 w-5 text-primary" />
+                      {guide.title}
+                    </h3>
+                    <ol className="space-y-2 ml-6 list-decimal">
+                      {guide.steps.map((step, index) => (
+                        <li key={index} className="text-muted-foreground">
+                          {step}
+                        </li>
+                      ))}
+                    </ol>
+                    <div className="mt-4">
+                      <Button variant="outline" size="sm">
+                        Lihat Panduan Lengkap
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Tutorial Interaktif */}
+        <TabsContent value="interactive" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Tutorial Interaktif</CardTitle>
+              <CardDescription>
+                Pelajari dengan mencoba langsung fitur-fitur aplikasi
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="border rounded-lg p-6 flex flex-col items-center text-center">
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                    <FileText className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Membuat Dokumen SMAP
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    Tutorial interaktif untuk membuat dokumen SMAP sesuai kebutuhan organisasi Anda.
+                  </p>
+                  <Badge className="mb-4">10 menit</Badge>
+                  <Button>Mulai Tutorial</Button>
+                </div>
+                <div className="border rounded-lg p-6 flex flex-col items-center text-center">
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                    <AlertCircle className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Manajemen Risiko
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    Pelajari cara mengidentifikasi dan mengelola risiko penyuapan di organisasi Anda.
+                  </p>
+                  <Badge className="mb-4">15 menit</Badge>
+                  <Button>Mulai Tutorial</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Unduhan */}
+        <TabsContent value="downloads" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Unduhan</CardTitle>
+              <CardDescription>
+                Unduh template dan panduan untuk membantu implementasi SMAP
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {downloads.map((item, index) => (
+                  <div
+                    key={index}
+                    className="border rounded-md p-4 flex items-start space-x-4"
+                  >
+                    <div className="rounded-md bg-primary/10 p-2 flex-shrink-0">
+                      <FileText className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-medium">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {item.description}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Badge variant="outline">{item.fileType}</Badge>
+                          <span className="text-xs text-muted-foreground">
+                            {item.fileSize}
+                          </span>
+                        </div>
+                        <Button variant="ghost" size="sm" asChild>
+                          <a href={item.url} download>
+                            <Download className="mr-2 h-4 w-4" />
+                            Unduh
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* FAQ */}
+        <TabsContent value="faq" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Pertanyaan yang Sering Diajukan</CardTitle>
+              <CardDescription>
+                Temukan jawaban untuk pertanyaan umum tentang aplikasi dan SMAP
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible className="w-full">
+                {faqs.map((faq, index) => (
+                  <AccordionItem key={index} value={`item-${index}`}>
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center">
+                        <HelpCircle className="mr-2 h-4 w-4 text-primary flex-shrink-0" />
+                        <span>{faq.question}</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+              <div className="mt-6 text-center">
+                <p className="text-muted-foreground mb-4">
+                  Tidak menemukan jawaban yang Anda cari?
+                </p>
+                <Button asChild>
+                  <a href="/contact">Hubungi Kami</a>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}

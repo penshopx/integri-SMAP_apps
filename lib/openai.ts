@@ -1,0 +1,1 @@
+npm install openai next-themes lucide-react date-fns @hookform/resolvers zod react-hook-form

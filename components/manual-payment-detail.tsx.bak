@@ -1,0 +1,302 @@
+"use client";
+
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2, Copy, AlertCircle, CheckCircle } from 'lucide-react';
+
+// Schema validasi untuk form pembayaran manual
+const manualPaymentSchema = z.object({
+  senderName: z.string().min(3, {
+    message: "Nama pengirim harus minimal 3 karakter.",
+  }),
+  senderBank: z.string().min(3, {
+    message: "Nama bank pengirim harus minimal 3 karakter.",
+  }),
+  transferAmount: z.string().min(1, {
+    message: "Jumlah transfer harus diisi.",
+  }),
+  transferDate: z.string().min(1, {
+    message: "Tanggal transfer harus diisi.",
+  }),
+  transferReference: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export function ManualPaymentDetails({ orderNumber, totalAmount }: { orderNumber: string, totalAmount: string }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [showUploadProof, setShowUploadProof] = useState(false);
+
+  // Inisialisasi form dengan react-hook-form
+  const form = useForm<z.infer<typeof manualPaymentSchema>>({
+    resolver: zodResolver(manualPaymentSchema),
+    defaultValues: {
+      senderName: "",
+      senderBank: "",
+      transferAmount: "",
+      transferDate: "",
+      transferReference: "",
+      notes: "",
+    },
+  });
+
+  // Handler untuk submit form
+  const onSubmit = async (values: z.infer<typeof manualPaymentSchema>) => {
+    setIsSubmitting(true);
+
+    try {
+      // Simulasi pengiriman data ke server
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      
+      console.log("Form values:", values);
+      setIsSuccess(true);
+      setShowUploadProof(true);
+    } catch (error) {
+      console.error("Error submitting payment details:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Handler untuk menyalin nomor rekening
+  const handleCopyAccountNumber = (accountNumber: string) => {
+    navigator.clipboard.writeText(accountNumber);
+  };
+
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Detail Pembayaran Manual</CardTitle>
+        <CardDescription>
+          Silakan transfer ke salah satu rekening berikut dan isi form konfirmasi
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="rounded-lg border p-4 space-y-4">
+          <div>
+            <h3 className="font-medium">Informasi Pesanan:</h3>
+            <p className="text-sm">Nomor Pesanan: {orderNumber}</p>
+            <p className="text-sm">Total Pembayaran: {totalAmount}</p>
+          </div>
+          <div>
+            <h3 className="font-medium">Rekening Tujuan:</h3>
+            <div className="space-y-2 mt-2">
+              <div className="flex items-center justify-between rounded-md border p-2">
+                <div>
+                  <p className="font-medium">Bank BCA</p>
+                  <p className="text-sm">PT Integri Solutions</p>
+                  <p className="text-sm font-medium">1234567890</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleCopyAccountNumber("1234567890")}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex items-center justify-between rounded-md border p-2">
+                <div>
+                  <p className="font-medium">Bank Mandiri</p>
+                  <p className="text-sm">PT Integri Solutions</p>
+                  <p className="text-sm font-medium">0987654321</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleCopyAccountNumber("0987654321")}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex items-center justify-between rounded-md border p-2">
+                <div>
+                  <p className="font-medium">Bank BNI</p>
+                  <p className="text-sm">PT Integri Solutions</p>
+                  <p className="text-sm font-medium">5678901234</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleCopyAccountNumber("5678901234")}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t pt-6">
+          <h3 className="font-medium mb-4">Form Konfirmasi Pembayaran:</h3>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="senderName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nama Pengirim</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Masukkan nama pengirim" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Nama pemilik rekening yang digunakan untuk transfer.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="senderBank"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bank Pengirim</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Masukkan nama bank pengirim" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Bank yang digunakan untuk melakukan transfer.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="transferAmount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Jumlah Transfer</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Masukkan jumlah transfer" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="transferDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tanggal Transfer</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="transferReference"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nomor Referensi Transfer (Opsional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Masukkan nomor referensi transfer" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Nomor referensi yang tertera pada bukti transfer.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="notes"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Catatan (Opsional)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Tambahkan catatan jika diperlukan"
+                        className="resize-none"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {isSuccess ? (
+                <Alert className="bg-green-50">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <AlertDescription className="text-green-600">
+                    Konfirmasi pembayaran berhasil dikirim. Silakan unggah bukti pembayaran.
+                  </AlertDescription>
+                </Alert>
+              ) : (
+                <Button type="submit" disabled={isSubmitting} className="w-full">
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Mengirim Konfirmasi...
+                    </>
+                  ) : (
+                    "Kirim Konfirmasi Pembayaran"
+                  )}
+                </Button>
+              )}
+            </form>
+          </Form>
+        </div>
+
+        {showUploadProof && (
+          <div className="border-t pt-6">
+            <h3 className="font-medium mb-4">Unggah Bukti Pembayaran:</h3>
+            <div className="border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center">
+              <div className="text-center space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Klik untuk mengunggah atau seret dan lepas
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  PNG, JPG, atau PDF (Maks. 5MB)
+                </p>
+              </div>
+              <Input
+                type="file"
+                className="hidden"
+                id="payment-proof"
+                accept=".png,.jpg,.jpeg,.pdf"
+              />
+              <Button
+                variant="outline"
+                className="mt-4"
+                onClick={() => document.getElementById("payment-proof")?.click()}
+              >
+                Pilih File
+              </Button>
+            </div>
+          </div>
+        )}
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        <p className="text-sm text-muted-foreground">
+          Pembayaran akan diverifikasi dalam 1x24 jam kerja.
+        </p>
+      </CardFooter>
+    </Card>
+  );
+}

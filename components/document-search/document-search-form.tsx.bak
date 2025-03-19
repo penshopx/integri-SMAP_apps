@@ -1,0 +1,205 @@
+"use client";
+
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { DatePicker } from "@/components/ui/date-picker";
+import { Search, X } from 'lucide-react';
+
+// Schema validasi untuk form pencarian
+const searchFormSchema = z.object({
+  keyword: z.string().optional(),
+  documentType: z.string().optional(),
+  dateFrom: z.date().optional(),
+  dateTo: z.date().optional(),
+  status: z.string().optional(),
+});
+
+// Tipe data untuk form pencarian
+type SearchFormValues = z.infer<typeof searchFormSchema>;
+
+// Props untuk komponen DocumentSearchForm
+interface DocumentSearchFormProps {
+  onSearch: (data: SearchFormValues) => void;
+}
+
+export function DocumentSearchForm({ onSearch }: DocumentSearchFormProps) {
+  const [isAdvancedSearch, setIsAdvancedSearch] = useState(false);
+
+  // Inisialisasi form dengan react-hook-form
+  const form = useForm<SearchFormValues>({
+    resolver: zodResolver(searchFormSchema),
+    defaultValues: {
+      keyword: "",
+      documentType: "",
+      status: "",
+    },
+  });
+
+  // Handler untuk submit form
+  const handleSubmit = (data: SearchFormValues) => {
+    onSearch(data);
+  };
+
+  // Handler untuk reset form
+  const handleReset = () => {
+    form.reset({
+      keyword: "",
+      documentType: "",
+      dateFrom: undefined,
+      dateTo: undefined,
+      status: "",
+    });
+    onSearch({});
+  };
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <div className="flex flex-col md:flex-row gap-4">
+          <FormField
+            control={form.control}
+            name="keyword"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormControl>
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Cari dokumen..."
+                      className="pl-8"
+                      {...field}
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setIsAdvancedSearch(!isAdvancedSearch)}
+          >
+            {isAdvancedSearch ? "Sembunyikan Filter" : "Tampilkan Filter"}
+          </Button>
+          <Button type="submit">Cari</Button>
+          {(form.formState.isDirty || isAdvancedSearch) && (
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={handleReset}
+              className="flex items-center"
+            >
+              <X className="mr-2 h-4 w-4" />
+              Reset
+            </Button>
+          )}
+        </div>
+
+        {isAdvancedSearch && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
+            <FormField
+              control={form.control}
+              name="documentType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tipe Dokumen</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Semua tipe" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="">Semua tipe</SelectItem>
+                      <SelectItem value="policy">Kebijakan</SelectItem>
+                      <SelectItem value="procedure">Prosedur</SelectItem>
+                      <SelectItem value="form">Formulir</SelectItem>
+                      <SelectItem value="record">Catatan</SelectItem>
+                      <SelectItem value="report">Laporan</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dateFrom"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Tanggal Mulai</FormLabel>
+                  <DatePicker
+                    date={field.value}
+                    setDate={field.onChange}
+                    placeholder="Pilih tanggal mulai"
+                  />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dateTo"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Tanggal Akhir</FormLabel>
+                  <DatePicker
+                    date={field.value}
+                    setDate={field.onChange}
+                    placeholder="Pilih tanggal akhir"
+                  />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Semua status" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="">Semua status</SelectItem>
+                      <SelectItem value="draft">Draft</SelectItem>
+                      <SelectItem value="review">Dalam Review</SelectItem>
+                      <SelectItem value="approved">Disetujui</SelectItem>
+                      <SelectItem value="published">Dipublikasikan</SelectItem>
+                      <SelectItem value="archived">Diarsipkan</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
+      </form>
+    </Form>
+  );
+}

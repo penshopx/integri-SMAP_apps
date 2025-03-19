@@ -1,0 +1,297 @@
+"use client";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, FileText, AlertTriangle, CheckCircle, Clock, BarChart3 } from 'lucide-react';
+
+export function SMAPDashboard() {
+  return (
+    <div className="space-y-4">
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="overview">Ringkasan</TabsTrigger>
+          <TabsTrigger value="implementation">Implementasi</TabsTrigger>
+          <TabsTrigger value="risks">Risiko</TabsTrigger>
+        </TabsList>
+        <TabsContent value="overview" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Dokumen</CardTitle>
+                <FileText className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">12</div>
+                <p className="text-xs text-muted-foreground">
+                  +2 dokumen bulan ini
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Risiko Teridentifikasi</CardTitle>
+                <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">8</div>
+                <p className="text-xs text-muted-foreground">
+                  3 risiko tinggi
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Kontrol Diterapkan</CardTitle>
+                <CheckCircle className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">24</div>
+                <p className="text-xs text-muted-foreground">
+                  +4 kontrol bulan ini
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Audit Mendatang</CardTitle>
+                <Clock className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">14 Hari</div>
+                <p className="text-xs text-muted-foreground">
+                  Audit internal ISO 37001
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Aktivitas Terbaru</CardTitle>
+              <CardDescription>
+                Aktivitas terkait SMAP dalam 7 hari terakhir
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <div className="mr-4 rounded-full bg-primary/10 p-2">
+                    <FileText className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <p className="text-sm font-medium">Dokumen Baru Dibuat</p>
+                    <p className="text-xs text-muted-foreground">
+                      Prosedur Uji Tuntas Mitra Bisnis
+                    </p>
+                  </div>
+                  <div className="text-xs text-muted-foreground">2 hari lalu</div>
+                </div>
+                <div className="flex items-center">
+                  <div className="mr-4 rounded-full bg-primary/10 p-2">
+                    <AlertTriangle className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <p className="text-sm font-medium">Risiko Baru Teridentifikasi</p>
+                    <p className="text-xs text-muted-foreground">
+                      Konflik kepentingan dengan vendor
+                    </p>
+                  </div>
+                  <div className="text-xs text-muted-foreground">3 hari lalu</div>
+                </div>
+                <div className="flex items-center">
+                  <div className="mr-4 rounded-full bg-primary/10 p-2">
+                    <CheckCircle className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <p className="text-sm font-medium">Kontrol Baru Diterapkan</p>
+                    <p className="text-xs text-muted-foreground">
+                      Verifikasi latar belakang vendor
+                    </p>
+                  </div>
+                  <div className="text-xs text-muted-foreground">5 hari lalu</div>
+                </div>
+                <div className="flex items-center">
+                  <div className="mr-4 rounded-full bg-primary/10 p-2">
+                    <BarChart3 className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <p className="text-sm font-medium">Laporan Dibuat</p>
+                    <p className="text-xs text-muted-foreground">
+                      Laporan Tinjauan Manajemen Q2
+                    </p>
+                  </div>
+                  <div className="text-xs text-muted-foreground">7 hari lalu</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="implementation" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Status Implementasi ISO 37001</CardTitle>
+              <CardDescription>
+                Kemajuan implementasi elemen-elemen utama ISO 37001
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-medium">Kebijakan Anti Penyuapan</div>
+                    <div className="text-sm font-medium">100%</div>
+                  </div>
+                  <Progress value={100} className="h-2" />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-medium">Penilaian Risiko</div>
+                    <div className="text-sm font-medium">75%</div>
+                  </div>
+                  <Progress value={75} className="h-2" />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-medium">Pelatihan & Kesadaran</div>
+                    <div className="text-sm font-medium">60%</div>
+                  </div>
+                  <Progress value={60} className="h-2" />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-medium">Uji Tuntas</div>
+                    <div className="text-sm font-medium">40%</div>
+                  </div>
+                  <Progress value={40} className="h-2" />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-medium">Audit & Evaluasi</div>
+                    <div className="text-sm font-medium">25%</div>
+                  </div>
+                  <Progress value={25} className="h-2" />
+                </div>
+                <div className="pt-4 text-right">
+                  <Button variant="outline" size="sm">
+                    Lihat Detail
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Tugas Implementasi Mendatang</CardTitle>
+              <CardDescription>
+                Tugas-tugas yang perlu diselesaikan untuk implementasi ISO 37001
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                    <span className="text-sm font-medium">1</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Menyelesaikan penilaian risiko untuk departemen operasional</p>
+                    <p className="text-xs text-muted-foreground">Tenggat: 15 Agustus 2023</p>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                    <span className="text-sm font-medium">2</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Melaksanakan pelatihan anti penyuapan untuk karyawan baru</p>
+                    <p className="text-xs text-muted-foreground">Tenggat: 22 Agustus 2023</p>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                    <span className="text-sm font-medium">3</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Menerapkan prosedur uji tuntas untuk vendor baru</p>
+                    <p className="text-xs text-muted-foreground">Tenggat: 30 Agustus 2023</p>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <div className="mr-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                    <span className="text-sm font-medium">4</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Menyiapkan audit internal SMAP</p>
+                    <p className="text-xs text-muted-foreground">Tenggat: 15 September 2023</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="risks" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Distribusi Risiko</CardTitle>
+              <CardDescription>
+                Distribusi risiko berdasarkan tingkat dampak dan kemungkinan
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div className="rounded-md bg-red-100 p-4">
+                  <div className="text-2xl font-bold text-red-600">3</div>
+                  <div className="text-sm font-medium">Risiko Tinggi</div>
+                </div>
+                <div className="rounded-md bg-yellow-100 p-4">
+                  <div className="text-2xl font-bold text-yellow-600">4</div>
+                  <div className="text-sm font-medium">Risiko Sedang</div>
+                </div>
+                <div className="rounded-md bg-green-100 p-4">
+                  <div className="text-2xl font-bold text-green-600">1</div>
+                  <div className="text-sm font-medium">Risiko Rendah</div>
+                </div>
+              </div>
+              <div className="mt-6">
+                <h4 className="mb-4 text-sm font-medium">Risiko Tinggi Teratas</h4>
+                <div className="space-y-4">
+                  <div className="rounded-md border p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="font-medium">Suap dalam proses pengadaan</div>
+                      <div className="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-600">
+                        Tinggi
+                      </div>
+                    </div>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Risiko penyuapan dalam proses pengadaan barang dan jasa
+                    </p>
+                  </div>
+                  <div className="rounded-md border p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="font-medium">Donasi politik yang tidak transparan</div>
+                      <div className="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-600">
+                        Tinggi
+                      </div>
+                    </div>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Risiko donasi politik yang tidak transparan dan tidak sesuai regulasi
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4 text-right">
+                  <Button variant="outline" size="sm" asChild>
+                    <a href="/risk-management">
+                      Lihat Semua Risiko
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}

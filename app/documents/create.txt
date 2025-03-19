@@ -1,0 +1,372 @@
+"use client";
+
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { RiskTable } from "@/components/risk-management/risk-table";
+import { RiskForm } from "@/components/risk-management/risk-form";
+import { Plus, Download } from 'lucide-react';
+
+// Data dummy untuk risiko
+const dummyRisks = [
+  {
+    id: "1",
+    title: "Suap dalam proses pengadaan",
+    description: "Risiko penyuapan dalam proses pengadaan barang dan jasa",
+    impact: "high" as const,
+    likelihood: "medium" as const,
+    status: "identified" as const,
+    createdAt: "2023-01-15",
+  },
+  {
+    id: "2",
+    title: "Konflik kepentingan dengan vendor",
+    description: "Risiko konflik kepentingan antara karyawan dan vendor",
+    impact: "medium" as const,
+    likelihood: "high" as const,
+    status: "mitigated" as const,
+    createdAt: "2023-02-20",
+  },
+  {
+    id: "3",
+    title: "Pembayaran fasilitasi",
+    description: "Risiko pembayaran fasilitasi untuk mempercepat proses perizinan",
+    impact: "medium" as const,
+    likelihood: "medium" as const,
+    status: "accepted" as const,
+    createdAt: "2023-03-10",
+  },
+  {
+    id: "4",
+    title: "Donasi politik yang tidak transparan",
+    description: "Risiko donasi politik yang tidak transparan dan tidak sesuai regulasi",
+    impact: "high" as const,
+    likelihood: "low" as const,
+    status: "transferred" as const,
+    createdAt: "2023-04-05",
+  },
+];
+
+export default function RiskManagementPage() {
+  const [risks, setRisks] = useState(dummyRisks);
+  const [selectedRisk, setSelectedRisk] = useState<any>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  // Handler untuk melihat detail risiko
+  const handleViewRisk = (risk: any) => {
+    setSelectedRisk(risk);
+    setIsViewDialogOpen(true);
+  };
+
+  // Handler untuk mengedit risiko
+  const handleEditRisk = (risk: any) => {
+    setSelectedRisk(risk);
+    setIsEditDialogOpen(true);
+  };
+
+  // Handler untuk menghapus risiko
+  const handleDeleteRisk = (risk: any) => {
+    setSelectedRisk(risk);
+    setIsDeleteDialogOpen(true);
+  };
+
+  // Handler untuk konfirmasi penghapusan risiko
+  const confirmDeleteRisk = () => {
+    setRisks(risks.filter((r) => r.id !== selectedRisk.id));
+    setIsDeleteDialogOpen(false);
+  };
+
+  // Handler untuk menyimpan risiko baru
+  const handleAddRisk = async (data: any) => {
+    const newRisk = {
+      id: Date.now().toString(),
+      ...data,
+      createdAt: new Date().toISOString().split("T")[0],
+    };
+    setRisks([...risks, newRisk]);
+    setIsAddDialogOpen(false);
+  };
+
+  // Handler untuk menyimpan risiko yang diedit
+  const handleUpdateRisk = async (data: any) => {
+    setRisks(
+      risks.map((risk) =>
+        risk.id === selectedRisk.id ? { ...risk, ...data } : risk
+      )
+    );
+    setIsEditDialogOpen(false);
+  };
+
+  // Handler untuk mengekspor data risiko ke CSV
+  const handleExportCSV = () => {
+    const headers = ["Judul", "Deskripsi", "Dampak", "Kemungkinan", "Status", "Tanggal Dibuat"];
+    const csvData = risks.map((risk) => [
+      risk.title,
+      risk.description,
+      risk.impact,
+      risk.likelihood,
+      risk.status,
+      risk.createdAt,
+    ]);
+    
+    const csvContent = [
+      headers.join(","),
+      ...csvData.map((row) => row.join(",")),
+    ].join("\n");
+    
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "risiko_penyuapan.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Manajemen Risiko</h1>
+          <p className="text-muted-foreground">
+            Identifikasi, analisis, dan mitigasi risiko penyuapan
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={handleExportCSV}
+            className="flex items-center"
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Export CSV
+          </Button>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center">
+                <Plus className="mr-2 h-4 w-4" />
+                Tambah Risiko
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[600px]">
+              <DialogHeader>
+                <DialogTitle>Tambah Risiko Baru</DialogTitle>
+                <DialogDescription>
+                  Isi form berikut untuk menambahkan risiko penyuapan baru.
+                </DialogDescription>
+              </DialogHeader>
+              <RiskForm
+                onSubmit={handleAddRisk}
+                onCancel={() => setIsAddDialogOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      <Tabs defaultValue="all" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="all">Semua</TabsTrigger>
+          <TabsTrigger value="high">Risiko Tinggi</TabsTrigger>
+          <TabsTrigger value="medium">Risiko Sedang</TabsTrigger>
+          <TabsTrigger value="low">Risiko Rendah</TabsTrigger>
+        </TabsList>
+        <TabsContent value="all" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Semua Risiko</CardTitle>
+              <CardDescription>
+                Daftar semua risiko penyuapan yang teridentifikasi
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <RiskTable
+                risks={risks}
+                onView={handleViewRisk}
+                onEdit={handleEditRisk}
+                onDelete={handleDeleteRisk}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="high" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Risiko Tinggi</CardTitle>
+              <CardDescription>
+                Daftar risiko penyuapan dengan dampak tinggi
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <RiskTable
+                risks={risks.filter((risk) => risk.impact === "high")}
+                onView={handleViewRisk}
+                onEdit={handleEditRisk}
+                onDelete={handleDeleteRisk}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="medium" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Risiko Sedang</CardTitle>
+              <CardDescription>
+                Daftar risiko penyuapan dengan dampak sedang
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <RiskTable
+                risks={risks.filter((risk) => risk.impact === "medium")}
+                onView={handleViewRisk}
+                onEdit={handleEditRisk}
+                onDelete={handleDeleteRisk}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="low" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Risiko Rendah</CardTitle>
+              <CardDescription>
+                Daftar risiko penyuapan dengan dampak rendah
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <RiskTable
+                risks={risks.filter((risk) => risk.impact === "low")}
+                onView={handleViewRisk}
+                onEdit={handleEditRisk}
+                onDelete={handleDeleteRisk}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Dialog untuk melihat detail risiko */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Detail Risiko</DialogTitle>
+          </DialogHeader>
+          {selectedRisk && (
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-medium">Judul</h3>
+                <p>{selectedRisk.title}</p>
+              </div>
+              <div>
+                <h3 className="font-medium">Deskripsi</h3>
+                <p>{selectedRisk.description}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h3 className="font-medium">Dampak</h3>
+                  <p>
+                    {selectedRisk.impact === "high"
+                      ? "Tinggi"
+                      : selectedRisk.impact === "medium"
+                      ? "Sedang"
+                      : "Rendah"}
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-medium">Kemungkinan</h3>
+                  <p>
+                    {selectedRisk.likelihood === "high"
+                      ? "Tinggi"
+                      : selectedRisk.likelihood === "medium"
+                      ? "Sedang"
+                      : "Rendah"}
+                  </p>
+                </div>
+              </div>
+              <div>
+                <h3 className="font-medium">Status</h3>
+                <p>
+                  {selectedRisk.status === "identified"
+                    ? "Teridentifikasi"
+                    : selectedRisk.status === "mitigated"
+                    ? "Dimitigasi"
+                    : selectedRisk.status === "accepted"
+                    ? "Diterima"
+                    : "Ditransfer"}
+                </p>
+              </div>
+              <div>
+                <h3 className="font-medium">Tanggal Dibuat</h3>
+                <p>{selectedRisk.createdAt}</p>
+              </div>
+              <div className="flex justify-end">
+                <Button onClick={() => setIsViewDialogOpen(false)}>
+                  Tutup
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog untuk mengedit risiko */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Edit Risiko</DialogTitle>
+            <DialogDescription>
+              Edit informasi risiko penyuapan.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedRisk && (
+            <RiskForm
+              initialData={{
+                title: selectedRisk.title,
+                description: selectedRisk.description,
+                impact: selectedRisk.impact,
+                likelihood: selectedRisk.likelihood,
+                status: selectedRisk.status,
+                mitigationPlan: selectedRisk.mitigationPlan || "",
+              }}
+              onSubmit={handleUpdateRisk}
+              onCancel={() => setIsEditDialogOpen(false)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog untuk konfirmasi penghapusan risiko */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Konfirmasi Penghapusan</DialogTitle>
+            <DialogDescription>
+              Apakah Anda yakin ingin menghapus risiko ini? Tindakan ini tidak dapat dibatalkan.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end space-x-4 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              Batal
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDeleteRisk}
+            >
+              Hapus
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

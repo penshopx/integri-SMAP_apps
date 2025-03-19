@@ -1,0 +1,20 @@
+app/
+  ├── api/
+  │   ├── generate-document/
+  │   ├── manual-payment/
+  │   └── verify-manual-payment/
+  ├── dashboard/
+  ├── admin/
+  ├── tutorial/
+  ├── risk-management/
+  ├── document-history/
+  └── profile/
+components/
+  ├── ui/
+  ├── dashboard/
+  ├── tutorial/
+  └── landing/
+lib/
+  ├── supabase.ts
+  ├── token-manager.ts
+  └── openai.ts
