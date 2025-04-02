@@ -1,13 +1,19 @@
-import './globals.css';
+import './globals.css'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'IntegriGuide',
+  description: 'Platform generasi dokumen SMAP dan Pancek berbasis AI',
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="id">
       <body>{children}</body>
     </html>
-  );
+  )
 }
